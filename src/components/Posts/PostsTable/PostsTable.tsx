@@ -1,11 +1,21 @@
 import {useAppSelector} from "../../../common/hooks/useAppSelector";
-import Post from "../Post/Post";
+
 import styled from "styled-components";
-import React from "react";
+import React, {FC, useEffect} from "react";
+import {DescriptionColumn, IdColumn, Post, TitleColumn} from "../Post/Post";
+import {fetchPosts, setSortParams, SortDirectionType, SortKeyType, SortParamsType} from "../posts-reducer";
+import {useAppDispatch} from "../../../common/hooks/useAppDispatch";
+import {ReactComponent as IconArrow} from '../../../assets/img/arrow-sort.svg'
+import cn from "classnames";
+
 
 export const PostsTable = () => {
     const posts = useAppSelector(state => state.posts.posts)
+    const currentPage = useAppSelector(state => state.posts.currentPage)
+    const sortParams = useAppSelector(state => state.posts.sortParams)
+    const searchValue = useAppSelector((state) => state.posts.searchValue);
 
+    const dispatch = useAppDispatch()
     const postsItems = <>
         {posts.map(p => {
             return (
@@ -14,12 +24,64 @@ export const PostsTable = () => {
         })}
     </>
 
+    useEffect(() => {
+        dispatch(fetchPosts(currentPage))
+    }, [])
+
+    useEffect(()=> {
+        dispatch(fetchPosts(1, searchValue))
+    }, [sortParams])
+
+    type SortableColumnProps = {
+        title: string;
+        sortKey: SortKeyType;
+        sortParams: SortParamsType;
+        onSort(sortKey: SortKeyType, sortParams: SortParamsType): void;
+    };
+
+    const SortableColumn: FC<SortableColumnProps> = ({title, sortKey, sortParams, onSort}) => (
+        <ColumnHeader
+            className={cn(sortKey, {active: sortParams.sortKey === sortKey})}
+            onClick={() => onSort(sortKey, sortParams)}
+        >
+            {title}
+            <IconArrow
+                className={cn('icon-sort', {
+                    desc: sortParams.sortKey === sortKey && sortParams.sortDirection === 'desc'
+                })}
+            />
+        </ColumnHeader>
+    );
+
+    const tableHeaders = [
+        {title: 'ID', sortKey: 'id' as SortKeyType},
+        {title: 'Заголовок', sortKey: 'title' as SortKeyType},
+        {title: 'Описание', sortKey: 'body' as SortKeyType}
+    ];
+
+    const onSort = (sortKey: SortKeyType, sortParams: SortParamsType) => {
+        let params :SortParamsType= {
+            sortKey: sortKey,
+            sortDirection: 'asc'
+        }
+        if (sortKey === sortParams.sortKey && sortParams.sortDirection === 'asc') {
+            params.sortDirection = 'desc'
+        }
+        dispatch(setSortParams(params))
+    }
+
     return (
         <TableContainer>
             <TableHeader>
-                <div className={'id'}>ID</div>
-                <div className={'title'}>Заголовок</div>
-                <div className={'description'}>Описание</div>
+                {tableHeaders.map(({title, sortKey}) => (
+                    <SortableColumn
+                        key={sortKey}
+                        title={title}
+                        sortKey={sortKey}
+                        sortParams={sortParams}
+                        onSort={onSort}
+                    />
+                ))}
             </TableHeader>
             {posts.length
                 ? postsItems
@@ -42,12 +104,28 @@ const TableHeader = styled.div`
   font-size: 14px;
   font-weight: 600;
 
-  div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    padding: 19px 11px;
+`
+const ColumnHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 19px 11px;
+
+  &.id {
+    flex: 0 1 10%;
+  }
+
+  &.title {
+    flex: 0 1 50%;
+  }
+
+  &.body {
+    flex: 0 1 40%;
+  }
+
+  &.active {
+    background-color: var(--active-color);
   }
 `
 

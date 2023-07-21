@@ -99,7 +99,7 @@ const Page = styled.div`
   }
 
   &.current {
-    color: #7EBC3C;
+    color: var(--active-color);
   }
 
 `

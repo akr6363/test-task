@@ -1,57 +1,36 @@
-
 :root {
-  --main-color: #474955;
-  --gray-color: #E3E6EC;
+    --main-color: #474955;
+    --gray-color: #E3E6EC;
+    --active-color: #7EBC3C;
 }
-
+va
 body {
-  font-size: 13px;
-  color: var(--main-color);
- font-family: Roboto;
-  font-weight: 500;
-  line-height: 137.687%;
+    font-size: 13px;
+    color: var(--main-color);
+    font-family: Roboto;
+    font-weight: 500;
+    line-height: 137.687%;
 }
-
 
 .App {
-  padding: 20px;
+    padding: 20px;
 }
 
-.container {
-  max-width: 1077px;
-  box-sizing: border-box;
-  margin: 0 auto;
+.icon-placeholder {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
-.header,
-.row{
-  display: flex;
+.icon-sort {
+    margin-left: 40px;
+    transform: rotate(180deg);
+    transition: transform 0.3s ease-in-out;
+
 }
 
-.id {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 15px 11px;
-  flex: 0 1 10%;
-  border-bottom: 1px solid var(--gray-color);
-  border-left: 1px solid var(--gray-color);
+.icon-sort.desc {
+    transform: none;
+    transition: transform 0.3s ease-in-out;
 }
-
-.title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 15px 11px;
-  flex: 0 1 50%;
-  border: 1px solid var(--gray-color);
-  border-top: none;
-}
-
-.description {
-  flex: 0 1 40%;
-  border-bottom: 1px solid var(--gray-color);
-  border-right: 1px solid var(--gray-color);
-  padding: 15px 11px;
-}
-
