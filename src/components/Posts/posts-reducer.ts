@@ -1,5 +1,6 @@
 import {postsApi, PostType} from "./posts-api";
 import {AppRootStateType, AppThunk} from "../../app/store";
+import {handleServerNetworkError} from "../../common/utils/handleServerNetworkError";
 
 export type PostsReducerActionType =
     ReturnType<typeof setPosts>
@@ -7,6 +8,8 @@ export type PostsReducerActionType =
     | ReturnType<typeof setCurrentPage>
     | ReturnType<typeof setSearchValue>
     | ReturnType<typeof setSortParams>
+    | ReturnType<typeof setStatus>
+    | ReturnType<typeof setError>
 
 export type SortDirectionType = 'asc' | 'desc'
 export type SortKeyType = 'id' | 'title' | 'body'
@@ -15,6 +18,8 @@ export type SortParamsType = {
     sortDirection: SortDirectionType
     sortKey: SortKeyType
 }
+export type RequestStatusType = "idle" | "loading" | "succeeded" | "failed";
+
 
 type InitialStateType = {
     posts: PostType[]
@@ -23,6 +28,8 @@ type InitialStateType = {
     currentPage: number
     searchValue: string
     sortParams: SortParamsType
+    status: RequestStatusType,
+    error: string | null
 }
 
 const initialState = {
@@ -34,8 +41,9 @@ const initialState = {
     sortParams: {
         sortDirection: 'asc' as SortDirectionType,
         sortKey: 'id' as SortKeyType
-    }
-
+    },
+    status: "idle" as RequestStatusType,
+    error: null
 };
 
 export const postsReducer = (state: InitialStateType = initialState, action: PostsReducerActionType): InitialStateType => {
@@ -65,6 +73,16 @@ export const postsReducer = (state: InitialStateType = initialState, action: Pos
                 ...state,
                 sortParams: action.params
             }
+        case 'posts/SET_STATUS':
+            return {
+                ...state,
+                status: action.status
+            }
+        case 'posts/SET_ERROR':
+            return {
+                ...state,
+                error: action.error
+            }
         default:
             return state
     }
@@ -84,16 +102,26 @@ export const setSearchValue = (value: string) =>
 
 export const setSortParams = (params: SortParamsType) =>
     ({type: 'posts/SET_SORT_PARAMS', params} as const)
+export const setStatus = (status: RequestStatusType) =>
+    ({type: 'posts/SET_STATUS', status} as const)
+
+export const setError = (error: string | null) =>
+    ({type: 'posts/SET_ERROR', error} as const)
 
 
 export const fetchPosts = (): AppThunk => (dispatch, getState) => {
+    dispatch(setStatus('loading'))
     postsApi.getPosts()
         .then((res) => {
             const posts = foundPosts(res, getState().posts.searchValue)
             const sortPosts = getSortPosts(posts, getState().posts.sortParams)
             dispatch(setPosts(getPostsOnPage(getState().posts.currentPage, getState().posts.pageSize, sortPosts)))
             dispatch(setPageTotalCount(sortPosts.length))
-        });
+            dispatch(setStatus('succeeded'))
+        })
+        .catch(error => {
+            handleServerNetworkError(error, dispatch)
+        })
 };
 
 const foundPosts = (posts: PostType[], value: string) => {

@@ -2,20 +2,19 @@ import React, {ChangeEvent, FC, ReactNode, useEffect, useState} from 'react';
 import styled from "styled-components";
 
 type PropsType = {
-    onChange(value: string | undefined): void
+    onChange(value: string): void
     styles: { [key: string]: string }
     placeholder: string
     children?: ReactNode
 }
 
 export const SearchInput: FC<PropsType> = ({onChange, styles, placeholder, children}) => {
-    const [value, setValue] = useState<string | undefined>(undefined)
+    const [value, setValue] = useState<string>('')
     const [timerId, setTimerId] = useState<number | null>(null)
 
     const onSetValue = (e: ChangeEvent<HTMLInputElement>) => {
         setValue(e.currentTarget.value);
     }
-
 
     useEffect(() => {
         if (timerId) {
@@ -41,6 +40,7 @@ const Input = styled.input`
     font-weight: 400;
     color: #B2B7BF;
   }
+
   &:focus::placeholder {
     color: transparent;
   }

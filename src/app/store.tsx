@@ -13,6 +13,6 @@ export type AppDispatch = ThunkDispatch<AppRootStateType, unknown, AppActionsTyp
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppRootStateType, unknown, AppActionsType>
 
-type AppActionsType = PostsReducerActionType
+export type AppActionsType = PostsReducerActionType
 // @ts-ignore
 window.store = store

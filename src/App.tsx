@@ -8,21 +8,20 @@ import {SearchInput} from "./components/SearchInput/SearchInput";
 import {PostsTable} from "./components/Posts/PostsTable/PostsTable";
 import {ReactComponent as IconSearch} from './assets/img/search.svg'
 import {Route, Routes, useNavigate} from "react-router-dom";
+import {ErrorNotification} from "./components/ErrorNotification/ErrorNotification";
+import {useAppSelector} from "./common/hooks/useAppSelector";
 
 function App() {
 
     const dispatch = useAppDispatch()
-
-    const SearchPosts = (value: string | undefined) => {
-        if(value !== undefined) {
+    const SearchPosts = (value: string) => {
             dispatch(setSearchValue(value))
-            dispatch(setCurrentPage(1))
-        }
     }
 
 
     return (
         <div className="App">
+            <ErrorNotification/>
             <Container>
                 <SearchInputContainer>
                     <SearchInput onChange={SearchPosts} styles={stylesForInput} placeholder='Поиск'>

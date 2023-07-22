@@ -1,37 +1,38 @@
-import React from 'react';
-import {fetchPosts, setCurrentPage} from "../Posts/posts-reducer";
+import React, {useEffect} from 'react';
 import {useAppSelector} from "../../common/hooks/useAppSelector";
-import {useAppDispatch} from "../../common/hooks/useAppDispatch";
 import styled from "styled-components";
 import cn from 'classnames';
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 
 
 export const Paginator = () => {
     const pageSize = useAppSelector((state) => state.posts.pageSize);
     const currentPage = useAppSelector((state) => state.posts.currentPage);
     const pageTotalCount = useAppSelector((state) => state.posts.pageTotalCount);
-    const dispatch = useAppDispatch();
     const inactivePagesOnEachSide = 2
     const leftBoundary = currentPage - inactivePagesOnEachSide;
     const rightBoundary = currentPage + inactivePagesOnEachSide;
 
+    const navigate = useNavigate();
     const pageCount = Math.ceil(pageTotalCount / pageSize);
+
+    useEffect(() => {
+        if (currentPage > pageCount && pageCount !== 0) {
+            navigate('/1')
+        }
+    }, [pageCount])
+
     let numbersArray = [];
     for (let i = 1; i <= pageCount; i++) {
         numbersArray.push(i);
     }
 
     const setPrevPage = () => {
-        dispatch(setCurrentPage(currentPage-1));
+        navigate(`/${currentPage - 1}`);
     };
     const setNextPage = () => {
-        dispatch(setCurrentPage(currentPage + 1));
+        navigate(`/${currentPage + 1}`);
     };
-
-    const changePage = (page: number) => {
-        dispatch(setCurrentPage(page));
-    }
 
     return (
         <Pagination>
@@ -55,7 +56,7 @@ export const Paginator = () => {
                             <Page
                                 key={p}
                                 className={cn({'current': currentPage === p})}
-                                onClick={() => changePage(p)}
+
                             >
                                 <NavLink to={`/${p}`}>
                                     {p}
@@ -83,10 +84,14 @@ const SwitchBtn = styled.button`
   font-size: 24px;
   font-weight: 500;
   cursor: pointer;
-
+  transition: color 0.3s ease-in-out;
   &:disabled {
     color: rgba(0, 0, 0, 0.48);
     cursor: no-drop;
+  }
+  &:hover:not(:disabled) {
+    color: var(--active-color);
+    transition: color 0.3s ease-in-out;
   }
 `
 
@@ -98,6 +103,7 @@ const Page = styled.div`
   font-style: italic;
   font-weight: 700;
   cursor: pointer;
+  transition: color 0.3s ease-in-out;
 
   a {
     color: inherit;
@@ -111,6 +117,7 @@ const Page = styled.div`
   &.current,
   &:hover {
     color: var(--active-color);
+    transition: color 0.3s ease-in-out;
   }
 
 `

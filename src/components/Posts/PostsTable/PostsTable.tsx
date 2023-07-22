@@ -7,6 +7,7 @@ import {useAppDispatch} from "../../../common/hooks/useAppDispatch";
 import {ReactComponent as IconArrow} from '../../../assets/img/arrow-sort.svg'
 import cn from "classnames";
 import {useNavigate, useParams} from "react-router-dom";
+import {Preloader} from "../../Preloader/Preloader";
 
 
 export const PostsTable = () => {
@@ -14,6 +15,7 @@ export const PostsTable = () => {
     const currentPage = useAppSelector(state => state.posts.currentPage)
     const sortParams = useAppSelector(state => state.posts.sortParams)
     const searchValue = useAppSelector((state) => state.posts.searchValue);
+    const status = useAppSelector((state) => state.posts.status);
 
 
     const navigate = useNavigate();
@@ -36,7 +38,6 @@ export const PostsTable = () => {
         if (id) {
             dispatch(setCurrentPage(Number(id)))
         }
-
     }, [id])
 
     useEffect(()=> {
@@ -94,10 +95,17 @@ export const PostsTable = () => {
                     />
                 ))}
             </TableHeader>
-            {posts.length
-                ? postsItems
-                : <EmptyPage>Посты не найдены...</EmptyPage>
+
+            {
+                status === 'loading'
+                ? <EmptyPage><Preloader/></EmptyPage>
+                    : <>{posts.length
+                            ? postsItems
+                            : <EmptyPage>Посты не найдены...</EmptyPage>
+                    }
+                    </>
             }
+
         </TableContainer>
     )
 }
