@@ -1,10 +1,7 @@
 import { PostType } from "components/Posts/posts-api";
 import { SortParamsType } from "components/Posts/posts-reducer";
 
-export const getSortPosts = (
-  posts: PostType[],
-  sortParams: SortParamsType,
-): PostType[] => {
+export const getSortPosts = (posts: PostType[], sortParams: SortParamsType): PostType[] => {
   const { sortKey, sortDirection } = sortParams;
   return [...posts].sort((a, b) => {
     const aValue = a[sortKey];

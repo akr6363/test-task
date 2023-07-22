@@ -20,6 +20,9 @@ const TableRow = styled.div`
     align-items: center;
     justify-content: center;
     padding: 15px 11px;
+    @media (max-width: 480px) {
+      padding: 15px 6px;
+    }
   }
 `;
 
@@ -33,9 +36,15 @@ export const TitleColumn = styled.div`
   border: 1px solid var(--gray-color);
   border-top: none;
   border-bottom: none;
+  @media (max-width: 768px) {
+    flex: 0 1 40%;
+  }
 `;
 
 export const DescriptionColumn = styled.div`
   flex: 0 1 40%;
   border-right: 1px solid var(--gray-color);
+  @media (max-width: 768px) {
+    flex: 0 1 50%;
+  }
 `;

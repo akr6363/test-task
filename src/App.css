@@ -3,7 +3,7 @@
   --gray-color: #e3e6ec;
   --active-color: #7ebc3c;
 }
- body {
+body {
   font-size: 13px;
   color: var(--main-color);
   font-family: Roboto;
@@ -22,13 +22,3 @@
   transform: translateY(-50%);
 }
 
-.icon-sort {
-  margin-left: 40px;
-  transform: rotate(180deg);
-  transition: transform 0.3s ease-in-out;
-}
-
-.icon-sort.desc {
-  transform: none;
-  transition: transform 0.3s ease-in-out;
-}

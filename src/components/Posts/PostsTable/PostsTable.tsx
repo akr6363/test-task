@@ -30,13 +30,7 @@ export const PostsTable = () => {
     <TableContainer>
       <TableHeader>
         {tableHeaders.map(({ title, sortKey }) => (
-          <SortableColumn
-            key={sortKey}
-            title={title}
-            sortKey={sortKey}
-            sortParams={sortParams}
-            onSort={onSort}
-          />
+          <SortableColumn key={sortKey} title={title} sortKey={sortKey} sortParams={sortParams} onSort={onSort} />
         ))}
       </TableHeader>
       <Routes>

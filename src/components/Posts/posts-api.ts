@@ -9,10 +9,8 @@ export type PostType = {
 
 export const postsApi = {
   getPosts() {
-    return axios
-      .get<PostType[]>("https://jsonplaceholder.typicode.com/posts")
-      .then((response) => {
-        return response.data;
-      });
+    return axios.get<PostType[]>("https://jsonplaceholder.typicode.com/posts").then((response) => {
+      return response.data;
+    });
   },
 };

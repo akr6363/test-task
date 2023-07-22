@@ -18,11 +18,7 @@ function App() {
       <ErrorNotification />
       <Container>
         <SearchInputContainer>
-          <SearchInput
-            onChange={SearchPosts}
-            styles={stylesForInput}
-            placeholder="Поиск"
-          >
+          <SearchInput onChange={SearchPosts} styles={stylesForInput} placeholder="Поиск">
             <IconSearch className={"icon-placeholder"} />
           </SearchInput>
         </SearchInputContainer>
@@ -50,6 +46,9 @@ const SearchInputContainer = styled.div`
   position: relative;
   margin-bottom: 15px;
   width: 59%;
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 `;
 const Container = styled.div`
   max-width: 1077px;

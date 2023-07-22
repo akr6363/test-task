@@ -38,9 +38,7 @@ export const Paginator = () => {
       return p >= leftBoundary && p <= inactivePagesOnEachSide * 2 + 1;
     }
     if (rightBoundary > pageCount) {
-      return (
-        p >= -inactivePagesOnEachSide * 2 + pageCount && p <= rightBoundary
-      );
+      return p >= -inactivePagesOnEachSide * 2 + pageCount && p <= rightBoundary;
     }
     return p >= leftBoundary && p <= rightBoundary;
   });
@@ -72,6 +70,9 @@ const Pagination = styled.div`
   flex-direction: row;
   padding: 0 30px;
   color: var(--main-color);
+  @media (max-width: 480px) {
+    padding: 0;
+  }
 `;
 
 const SwitchBtn = styled.button`
@@ -80,6 +81,9 @@ const SwitchBtn = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: color 0.3s ease-in-out;
+  @media (max-width: 480px) {
+    font-size: 18px;
+  }
   &:disabled {
     color: rgba(0, 0, 0, 0.48);
     cursor: no-drop;
@@ -99,6 +103,9 @@ const Page = styled.div`
   font-weight: 700;
   cursor: pointer;
   transition: color 0.3s ease-in-out;
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
 
   a {
     color: inherit;

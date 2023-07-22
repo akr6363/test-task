@@ -8,12 +8,7 @@ type PropsType = {
   children?: ReactNode;
 };
 
-export const SearchInput: FC<PropsType> = ({
-  onChange,
-  styles,
-  placeholder,
-  children,
-}) => {
+export const SearchInput: FC<PropsType> = ({ onChange, styles, placeholder, children }) => {
   const [value, setValue] = useState<string>("");
   const [timerId, setTimerId] = useState<number | null>(null);
 
@@ -34,13 +29,7 @@ export const SearchInput: FC<PropsType> = ({
 
   return (
     <>
-      <Input
-        style={styles}
-        type="text"
-        value={value}
-        onChange={onSetValue}
-        placeholder={placeholder}
-      />
+      <Input style={styles} type="text" value={value} onChange={onSetValue} placeholder={placeholder} />
       {children}
     </>
   );

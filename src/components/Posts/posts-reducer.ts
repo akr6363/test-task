@@ -1,10 +1,6 @@
 import { postsApi, PostType } from "./posts-api";
 import { AppThunk } from "app/store";
-import {
-  findPosts,
-  getPostsOnPage,
-  getSortPosts,
-} from "common/utils/posts-helpers";
+import { findPosts, getPostsOnPage, getSortPosts } from "common/utils/posts-helpers";
 import { handleServerNetworkError } from "common/utils";
 
 const initialState = {
@@ -67,50 +63,34 @@ export const postsReducer = (
 
 //--------------------actions-------------------------//
 
-export const setPosts = (posts: PostType[]) =>
-  ({ type: "posts/SET-POSTS", posts }) as const;
+export const setPosts = (posts: PostType[]) => ({ type: "posts/SET-POSTS", posts }) as const;
 
 export const setPageTotalCount = (pageTotalCount: number) =>
   ({ type: "posts/SET_PAGE_TOTAL_COUNT", pageTotalCount }) as const;
 
-export const setCurrentPage = (currentPage: number) =>
-  ({ type: "posts/SET_CURRENT_PAGE", currentPage }) as const;
+export const setCurrentPage = (currentPage: number) => ({ type: "posts/SET_CURRENT_PAGE", currentPage }) as const;
 
-export const setSearchValue = (value: string) =>
-  ({ type: "posts/SET_SEARCH_VALUE", value }) as const;
+export const setSearchValue = (value: string) => ({ type: "posts/SET_SEARCH_VALUE", value }) as const;
 
-export const setSortParams = (params: SortParamsType) =>
-  ({ type: "posts/SET_SORT_PARAMS", params }) as const;
-export const setStatus = (status: RequestStatusType) =>
-  ({ type: "posts/SET_STATUS", status }) as const;
+export const setSortParams = (params: SortParamsType) => ({ type: "posts/SET_SORT_PARAMS", params }) as const;
+export const setStatus = (status: RequestStatusType) => ({ type: "posts/SET_STATUS", status }) as const;
 
-export const setError = (error: string | null) =>
-  ({ type: "posts/SET_ERROR", error }) as const;
+export const setError = (error: string | null) => ({ type: "posts/SET_ERROR", error }) as const;
 
 //--------------------thunks-------------------------//
 
-export const fetchPosts = (): AppThunk => (dispatch, getState) => {
-  dispatch(setStatus("loading"));
-  postsApi
-    .getPosts()
-    .then((res) => {
-      const posts = findPosts(res, getState().posts.searchValue);
-      const sortPosts = getSortPosts(posts, getState().posts.sortParams);
-      dispatch(
-        setPosts(
-          getPostsOnPage(
-            getState().posts.currentPage,
-            getState().posts.pageSize,
-            sortPosts,
-          ),
-        ),
-      );
-      dispatch(setPageTotalCount(sortPosts.length));
-      dispatch(setStatus("succeeded"));
-    })
-    .catch((error) => {
-      handleServerNetworkError(error, dispatch);
-    });
+export const fetchPosts = (): AppThunk => async (dispatch, getState) => {
+  try {
+    dispatch(setStatus("loading"));
+    const res = await postsApi.getPosts();
+    const posts = findPosts(res, getState().posts.searchValue);
+    const sortPosts = getSortPosts(posts, getState().posts.sortParams);
+    dispatch(setPosts(getPostsOnPage(getState().posts.currentPage, getState().posts.pageSize, sortPosts)));
+    dispatch(setPageTotalCount(sortPosts.length));
+    dispatch(setStatus("succeeded"));
+  } catch (error: any) {
+    handleServerNetworkError(error, dispatch);
+  }
 };
 
 //--------------------types-------------------------//
