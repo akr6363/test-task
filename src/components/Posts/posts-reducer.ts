@@ -86,13 +86,12 @@ export const setSortParams = (params: SortParamsType) =>
     ({type: 'posts/SET_SORT_PARAMS', params} as const)
 
 
-export const fetchPosts = (currentPage: number, value: string = '', pageSize: number = 10): AppThunk => (dispatch, getState) => {
+export const fetchPosts = (): AppThunk => (dispatch, getState) => {
     postsApi.getPosts()
         .then((res) => {
-            const posts = foundPosts(res, value)
+            const posts = foundPosts(res, getState().posts.searchValue)
             const sortPosts = getSortPosts(posts, getState().posts.sortParams)
-            dispatch(setPosts(getPostsOnPage(currentPage, pageSize, sortPosts)))
-            dispatch(setCurrentPage(currentPage))
+            dispatch(setPosts(getPostsOnPage(getState().posts.currentPage, getState().posts.pageSize, sortPosts)))
             dispatch(setPageTotalCount(sortPosts.length))
         });
 };

@@ -2,14 +2,14 @@ import React, {ChangeEvent, FC, ReactNode, useEffect, useState} from 'react';
 import styled from "styled-components";
 
 type PropsType = {
-    onChange(value: string): void
+    onChange(value: string | undefined): void
     styles: { [key: string]: string }
     placeholder: string
     children?: ReactNode
 }
 
 export const SearchInput: FC<PropsType> = ({onChange, styles, placeholder, children}) => {
-    const [value, setValue] = useState<string>('')
+    const [value, setValue] = useState<string | undefined>(undefined)
     const [timerId, setTimerId] = useState<number | null>(null)
 
     const onSetValue = (e: ChangeEvent<HTMLInputElement>) => {

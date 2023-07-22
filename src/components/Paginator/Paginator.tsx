@@ -1,16 +1,16 @@
 import React from 'react';
-import {fetchPosts} from "../Posts/posts-reducer";
+import {fetchPosts, setCurrentPage} from "../Posts/posts-reducer";
 import {useAppSelector} from "../../common/hooks/useAppSelector";
 import {useAppDispatch} from "../../common/hooks/useAppDispatch";
 import styled from "styled-components";
 import cn from 'classnames';
+import {NavLink} from "react-router-dom";
+
 
 export const Paginator = () => {
     const pageSize = useAppSelector((state) => state.posts.pageSize);
     const currentPage = useAppSelector((state) => state.posts.currentPage);
     const pageTotalCount = useAppSelector((state) => state.posts.pageTotalCount);
-    const searchValue = useAppSelector((state) => state.posts.searchValue);
-
     const dispatch = useAppDispatch();
     const inactivePagesOnEachSide = 2
     const leftBoundary = currentPage - inactivePagesOnEachSide;
@@ -23,14 +23,14 @@ export const Paginator = () => {
     }
 
     const setPrevPage = () => {
-        dispatch(fetchPosts(currentPage - 1));
+        dispatch(setCurrentPage(currentPage-1));
     };
     const setNextPage = () => {
-        dispatch(fetchPosts(currentPage + 1));
+        dispatch(setCurrentPage(currentPage + 1));
     };
 
     const changePage = (page: number) => {
-        dispatch(fetchPosts(page, searchValue));
+        dispatch(setCurrentPage(page));
     }
 
     return (
@@ -51,13 +51,17 @@ export const Paginator = () => {
                     )
                     .map((p) => {
                         return (
+
                             <Page
                                 key={p}
                                 className={cn({'current': currentPage === p})}
                                 onClick={() => changePage(p)}
                             >
-                                {p}
+                                <NavLink to={`/${p}`}>
+                                    {p}
+                                </NavLink>
                             </Page>
+
                         );
                     })}
             </Pages>
@@ -93,12 +97,19 @@ const Page = styled.div`
   font-size: 18px;
   font-style: italic;
   font-weight: 700;
+  cursor: pointer;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 
   &:not(:last-child) {
     margin-right: 15px;
   }
 
-  &.current {
+  &.current,
+  &:hover {
     color: var(--active-color);
   }
 

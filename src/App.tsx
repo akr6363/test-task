@@ -1,21 +1,25 @@
 import React, {useEffect} from 'react';
 import './App.css';
-import {fetchPosts, setSearchValue} from "./components/Posts/posts-reducer";
+import {fetchPosts, setCurrentPage, setSearchValue} from "./components/Posts/posts-reducer";
 import {useAppDispatch} from "./common/hooks/useAppDispatch";
 import styled from "styled-components";
 import {Paginator} from "./components/Paginator/Paginator";
 import {SearchInput} from "./components/SearchInput/SearchInput";
 import {PostsTable} from "./components/Posts/PostsTable/PostsTable";
 import {ReactComponent as IconSearch} from './assets/img/search.svg'
+import {Route, Routes, useNavigate} from "react-router-dom";
 
 function App() {
 
     const dispatch = useAppDispatch()
 
-    const SearchPosts = (value: string) => {
-        dispatch(fetchPosts(1, value))
-        dispatch(setSearchValue(value))
+    const SearchPosts = (value: string | undefined) => {
+        if(value !== undefined) {
+            dispatch(setSearchValue(value))
+            dispatch(setCurrentPage(1))
+        }
     }
+
 
     return (
         <div className="App">
@@ -25,7 +29,11 @@ function App() {
                         <IconSearch className={'icon-placeholder'}/>
                     </SearchInput>
                 </SearchInputContainer>
-                <PostsTable/>
+                <Routes>
+                    <Route path={"/"} element={<PostsTable/>}>
+                        <Route path={":id"} element={<PostsTable/>}/>
+                    </Route>
+                </Routes>
                 <Paginator/>
             </Container>
         </div>
@@ -50,7 +58,7 @@ const SearchInputContainer = styled.div`
   margin-bottom: 15px;
   width: 59%;
 `
-const Container = styled.div `
+const Container = styled.div`
   max-width: 1077px;
   box-sizing: border-box;
   margin: 0 auto;

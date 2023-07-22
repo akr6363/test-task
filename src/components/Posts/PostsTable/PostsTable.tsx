@@ -1,12 +1,12 @@
 import {useAppSelector} from "../../../common/hooks/useAppSelector";
-
 import styled from "styled-components";
 import React, {FC, useEffect} from "react";
-import {DescriptionColumn, IdColumn, Post, TitleColumn} from "../Post/Post";
-import {fetchPosts, setSortParams, SortDirectionType, SortKeyType, SortParamsType} from "../posts-reducer";
+import {Post} from "../Post/Post";
+import {fetchPosts, setCurrentPage, setSortParams, SortKeyType, SortParamsType} from "../posts-reducer";
 import {useAppDispatch} from "../../../common/hooks/useAppDispatch";
 import {ReactComponent as IconArrow} from '../../../assets/img/arrow-sort.svg'
 import cn from "classnames";
+import {useNavigate, useParams} from "react-router-dom";
 
 
 export const PostsTable = () => {
@@ -14,6 +14,14 @@ export const PostsTable = () => {
     const currentPage = useAppSelector(state => state.posts.currentPage)
     const sortParams = useAppSelector(state => state.posts.sortParams)
     const searchValue = useAppSelector((state) => state.posts.searchValue);
+
+
+    const navigate = useNavigate();
+    if (window.location.pathname === '/') {
+        navigate('/1');
+    }
+
+    const { id } = useParams();
 
     const dispatch = useAppDispatch()
     const postsItems = <>
@@ -25,12 +33,15 @@ export const PostsTable = () => {
     </>
 
     useEffect(() => {
-        dispatch(fetchPosts(currentPage))
-    }, [])
+        if (id) {
+            dispatch(setCurrentPage(Number(id)))
+        }
+
+    }, [id])
 
     useEffect(()=> {
-        dispatch(fetchPosts(1, searchValue))
-    }, [sortParams])
+        dispatch(fetchPosts())
+    }, [sortParams, searchValue, currentPage])
 
     type SortableColumnProps = {
         title: string;
