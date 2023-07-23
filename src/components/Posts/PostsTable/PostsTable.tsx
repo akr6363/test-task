@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React from "react";
 import { postsActions, SortKeyType, SortParamsType } from "../posts-reducer";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "common/hooks";
 import { SortableColumn } from "components/Posts/PostsTable/SortableColumn";
 import { TableBody } from "components/Posts/PostsTable/TableBody";
@@ -34,9 +34,8 @@ export const PostsTable = () => {
         ))}
       </TableHeader>
       <Routes>
-        <Route path={"/"} element={<TableBody />}>
-          <Route path={":id"} element={<TableBody />} />
-        </Route>
+        <Route path={"/"} element={<Navigate to="/1" />} />
+        <Route path={":id"} element={<TableBody />} />
       </Routes>
     </TableContainer>
   );

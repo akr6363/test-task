@@ -1,5 +1,5 @@
 import { useAppSelector } from "common/hooks/useAppSelector";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAppDispatch } from "common/hooks/useAppDispatch";
 import React, { useEffect } from "react";
 import { Post } from "components/Posts/PostsTable/Post/Post";
@@ -13,11 +13,6 @@ export const TableBody = () => {
   const currentPage = useAppSelector((state) => state.posts.currentPage);
   const sortParams = useAppSelector((state) => state.posts.sortParams);
   const searchValue = useAppSelector((state) => state.posts.searchValue);
-
-  const navigate = useNavigate();
-  if (window.location.pathname === "/") {
-    navigate("/1");
-  }
 
   const { id } = useParams();
   const dispatch = useAppDispatch();
