@@ -1,13 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@500;600&display=swap");
+
 :root {
   --main-color: #474955;
   --gray-color: #e3e6ec;
   --active-color: #7ebc3c;
+
+  --font-weight-regular: 500;
+  --font-weight-bold: 600;
 }
 body {
   font-size: 13px;
   color: var(--main-color);
-  font-family: Roboto;
-  font-weight: 500;
+  font-family: 'Roboto', sans-serif;
+  font-weight: var(--font-weight-regular);
   line-height: 137.687%;
 }
 

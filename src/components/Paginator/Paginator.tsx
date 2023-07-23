@@ -78,7 +78,7 @@ const Pagination = styled.div`
 const SwitchBtn = styled.button`
   all: unset;
   font-size: 24px;
-  font-weight: 500;
+  font-weight: var(--font-weight-regular);
   cursor: pointer;
   transition: color 0.3s ease-in-out;
   @media (max-width: 480px) {
@@ -100,7 +100,7 @@ const Pages = styled.div`
 const Page = styled.div`
   font-size: 18px;
   font-style: italic;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   cursor: pointer;
   transition: color 0.3s ease-in-out;
   @media (max-width: 480px) {

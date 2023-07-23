@@ -53,5 +53,5 @@ const TableHeader = styled.div`
   background-color: var(--main-color);
   color: #fff;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
 `;

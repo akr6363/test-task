@@ -48,7 +48,7 @@ const ErrorContainer = styled.div`
   padding: 10px 20px;
   div {
     color: #fff;
-    font-weight: 600;
+    font-weight: var(--font-weight-bold);
   }
 `;
 

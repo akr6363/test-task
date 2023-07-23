@@ -38,7 +38,7 @@ export const SearchInput: FC<PropsType> = ({ onChange, styles, placeholder, chil
 const Input = styled.input`
   &::placeholder {
     font-size: 14px;
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     color: #b2b7bf;
   }
 
