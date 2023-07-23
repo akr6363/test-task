@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React from "react";
-import { setSortParams, SortKeyType, SortParamsType } from "../posts-reducer";
+import { postsActions, SortKeyType, SortParamsType } from "../posts-reducer";
 import { Route, Routes } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "common/hooks";
 import { SortableColumn } from "components/Posts/PostsTable/SortableColumn";
@@ -23,7 +23,7 @@ export const PostsTable = () => {
     if (sortKey === sortParams.sortKey && sortParams.sortDirection === "asc") {
       params.sortDirection = "desc";
     }
-    dispatch(setSortParams(params));
+    dispatch(postsActions.setSortParams({ params }));
   };
 
   return (

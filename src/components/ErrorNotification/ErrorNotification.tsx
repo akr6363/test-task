@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useAppSelector } from "common/hooks/useAppSelector";
 import { useDispatch } from "react-redux";
-import { setError } from "../Posts/posts-reducer";
 import styled from "styled-components";
+import { postsActions } from "components/Posts/posts-reducer";
 
 export const ErrorNotification = () => {
   const error = useAppSelector((state) => state.posts.error);
@@ -13,7 +13,7 @@ export const ErrorNotification = () => {
     if (error) {
       setIsVisible(true);
       const timerId = setTimeout(() => {
-        dispatch(setError(null));
+        dispatch(postsActions.setError({ error: null }));
         setIsVisible(false);
       }, 3000);
       return () => clearTimeout(timerId);
@@ -21,7 +21,7 @@ export const ErrorNotification = () => {
   }, [error, dispatch]);
 
   const handleClose = () => {
-    dispatch(setError(null));
+    dispatch(postsActions.setError({ error: null }));
     setIsVisible(false);
   };
 

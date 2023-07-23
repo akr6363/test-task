@@ -1,16 +1,16 @@
 import React from "react";
 import "./App.css";
-import { setSearchValue } from "components/Posts/posts-reducer";
 import { useAppDispatch } from "common/hooks/useAppDispatch";
 import styled from "styled-components";
 import { ReactComponent as IconSearch } from "./assets/img/search.svg";
 import { ErrorNotification, Paginator, SearchInput } from "components";
 import { PostsTable } from "components/Posts/PostsTable";
+import { postsActions } from "components/Posts/posts-reducer";
 
 function App() {
   const dispatch = useAppDispatch();
   const SearchPosts = (value: string) => {
-    dispatch(setSearchValue(value));
+    dispatch(postsActions.setSearchValue({ value }));
   };
 
   return (

@@ -1,9 +1,9 @@
 import { postsApi, PostType } from "./posts-api";
-import { AppThunk } from "app/store";
 import { findPosts, getPostsOnPage, getSortPosts } from "common/utils/posts-helpers";
-import { handleServerNetworkError } from "common/utils";
+import { createAppAsyncThunk, handleServerNetworkError } from "common/utils";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+const initialState: InitialStateType = {
   posts: [],
   currentPage: 1,
   pageSize: 10,
@@ -16,93 +16,62 @@ const initialState = {
   status: "idle" as RequestStatusType,
   error: null,
 };
-export const postsReducer = (
-  state: InitialStateType = initialState,
-  action: PostsReducerActionType,
-): InitialStateType => {
-  switch (action.type) {
-    case "posts/SET-POSTS":
-      return {
-        ...state,
-        posts: [...action.posts],
-      };
-    case "posts/SET_PAGE_TOTAL_COUNT":
-      return {
-        ...state,
-        pageTotalCount: action.pageTotalCount,
-      };
-    case "posts/SET_CURRENT_PAGE":
-      return {
-        ...state,
-        currentPage: action.currentPage,
-      };
-    case "posts/SET_SEARCH_VALUE":
-      return {
-        ...state,
-        searchValue: action.value,
-      };
-    case "posts/SET_SORT_PARAMS":
-      return {
-        ...state,
-        sortParams: action.params,
-      };
-    case "posts/SET_STATUS":
-      return {
-        ...state,
-        status: action.status,
-      };
-    case "posts/SET_ERROR":
-      return {
-        ...state,
-        error: action.error,
-      };
-    default:
-      return state;
-  }
-};
 
-//--------------------actions-------------------------//
-
-export const setPosts = (posts: PostType[]) => ({ type: "posts/SET-POSTS", posts }) as const;
-
-export const setPageTotalCount = (pageTotalCount: number) =>
-  ({ type: "posts/SET_PAGE_TOTAL_COUNT", pageTotalCount }) as const;
-
-export const setCurrentPage = (currentPage: number) => ({ type: "posts/SET_CURRENT_PAGE", currentPage }) as const;
-
-export const setSearchValue = (value: string) => ({ type: "posts/SET_SEARCH_VALUE", value }) as const;
-
-export const setSortParams = (params: SortParamsType) => ({ type: "posts/SET_SORT_PARAMS", params }) as const;
-export const setStatus = (status: RequestStatusType) => ({ type: "posts/SET_STATUS", status }) as const;
-
-export const setError = (error: string | null) => ({ type: "posts/SET_ERROR", error }) as const;
+const slice = createSlice({
+  name: "posts",
+  initialState: initialState,
+  reducers: {
+    setPageTotalCount(state, action: PayloadAction<{ pageTotalCount: number }>) {
+      state.pageTotalCount = action.payload.pageTotalCount;
+    },
+    setCurrentPage(state, action: PayloadAction<{ currentPage: number }>) {
+      state.currentPage = action.payload.currentPage;
+    },
+    setSearchValue(state, action: PayloadAction<{ value: string }>) {
+      state.searchValue = action.payload.value;
+    },
+    setSortParams(state, action: PayloadAction<{ params: SortParamsType }>) {
+      state.sortParams = action.payload.params;
+    },
+    setStatus(state, action: PayloadAction<{ status: RequestStatusType }>) {
+      state.status = action.payload.status;
+    },
+    setError(state, action: PayloadAction<{ error: string | null }>) {
+      state.error = action.payload.error;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchPosts.fulfilled, (state, action) => {
+      state.posts = action.payload.posts;
+    });
+  },
+});
 
 //--------------------thunks-------------------------//
 
-export const fetchPosts = (): AppThunk => async (dispatch, getState) => {
+const fetchPosts = createAppAsyncThunk<{ posts: PostType[] }>("posts/fetchPosts", async (arg, thunkAPI) => {
+  const { dispatch, rejectWithValue, getState } = thunkAPI;
   try {
-    dispatch(setStatus("loading"));
+    dispatch(postsActions.setStatus({ status: "loading" }));
     const res = await postsApi.getPosts();
     const posts = findPosts(res, getState().posts.searchValue);
     const sortPosts = getSortPosts(posts, getState().posts.sortParams);
-    dispatch(setPosts(getPostsOnPage(getState().posts.currentPage, getState().posts.pageSize, sortPosts)));
-    dispatch(setPageTotalCount(sortPosts.length));
-    dispatch(setStatus("succeeded"));
+    dispatch(postsActions.setPageTotalCount({ pageTotalCount: sortPosts.length }));
+    dispatch(postsActions.setStatus({ status: "succeeded" }));
+    return {
+      posts: getPostsOnPage(getState().posts.currentPage, getState().posts.pageSize, sortPosts),
+    };
   } catch (error: any) {
     handleServerNetworkError(error, dispatch);
+    return rejectWithValue(null);
   }
-};
+});
 
 //--------------------types-------------------------//
 
-export type PostsReducerActionType =
-  | ReturnType<typeof setPosts>
-  | ReturnType<typeof setPageTotalCount>
-  | ReturnType<typeof setCurrentPage>
-  | ReturnType<typeof setSearchValue>
-  | ReturnType<typeof setSortParams>
-  | ReturnType<typeof setStatus>
-  | ReturnType<typeof setError>;
+export const postsReducer = slice.reducer;
+export const postsActions = slice.actions;
+export const postsThunks = { fetchPosts };
 
 export type SortDirectionType = "asc" | "desc";
 export type SortKeyType = "id" | "title" | "body";

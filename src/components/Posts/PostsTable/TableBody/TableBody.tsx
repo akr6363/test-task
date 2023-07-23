@@ -2,10 +2,10 @@ import { useAppSelector } from "common/hooks/useAppSelector";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch } from "common/hooks/useAppDispatch";
 import React, { useEffect } from "react";
-import { fetchPosts, setCurrentPage } from "components/Posts/posts-reducer";
 import { Post } from "components/Posts/PostsTable/Post/Post";
 import styled from "styled-components";
 import { Preloader } from "components/Preloader";
+import { postsActions, postsThunks } from "components/Posts/posts-reducer";
 
 export const TableBody = () => {
   const posts = useAppSelector((state) => state.posts.posts);
@@ -24,12 +24,12 @@ export const TableBody = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(setCurrentPage(Number(id)));
+      dispatch(postsActions.setCurrentPage({ currentPage: Number(id) }));
     }
   }, [id, dispatch]);
 
   useEffect(() => {
-    dispatch(fetchPosts());
+    dispatch(postsThunks.fetchPosts());
   }, [sortParams, searchValue, currentPage, dispatch]);
 
   if (status === "loading")
